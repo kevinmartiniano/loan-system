@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'document',
+        'user_type_id'
     ];
 
     /**
@@ -41,4 +43,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the post that owns the comment.
+     */
+    public function user_type()
+    {
+        return $this->belongsTo(UserType::class, 'user_type_id');
+    }
 }
