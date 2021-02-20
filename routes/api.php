@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\API\ {
+    AuthController,
+    UserTypeController
+};
+
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\UserTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Models\UserType;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
 
 class UserTypeController extends Controller
 {
@@ -25,7 +27,7 @@ class UserTypeController extends Controller
      */
     public function store(Request $request)
     {
-        return UserType::create($request->all());
+        return response()->json(UserType::create($request->all()), Response::HTTP_CREATED);
     }
 
     /**
@@ -48,7 +50,10 @@ class UserTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return (UserType::find($id))->update($request->all());
+        $userType = UserType::find($id);
+        $userType->update($request->all());
+
+        return $userType;
     }
 
     /**
@@ -57,8 +62,10 @@ class UserTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): void
     {
-        return (UserType::find($id))->delete();
+        (UserType::find($id))->delete();
+
+        return;
     }
 }
