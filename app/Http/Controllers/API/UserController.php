@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Response;
 
-class AuthController extends BaseController
+class UserController extends BaseController
 {
     /**
      * Registration
