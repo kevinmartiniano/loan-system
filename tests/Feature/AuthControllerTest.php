@@ -5,7 +5,7 @@ use Faker\Factory as Faker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Response;
 
-class UserControllerTest extends TestCase
+class AuthControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
