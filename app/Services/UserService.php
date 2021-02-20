@@ -4,10 +4,19 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\UserType;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use JsonException;
 
 class UserService {
+    private UserRepositoryInterface $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function createUser(array $user): User
     {
         if(!$this->passwordEquals($user['password'], $user['password_confirmation'])) {
@@ -22,15 +31,9 @@ class UserService {
             throw new JsonException($response, Response::HTTP_CONFLICT);
         }
 
-        $userType = (!empty($user['user_type_id']) ? $user['user_type_id'] : UserType::GENERAL);
+        $user['user_type_id'] = (!empty($user['user_type_id']) ? $user['user_type_id'] : UserType::GENERAL);
 
-        return User::create([
-            'name' => $user['name'],
-            'email' => $user['email'],
-            'document' => $user['document'],
-            'password' => bcrypt($user['password']),
-            'user_type_id' => $userType
-        ]);
+        return $this->userRepository->create($user);
     }
 
     public function passwordEquals(string $password, string $passwordConfirmation): bool
@@ -40,9 +43,17 @@ class UserService {
 
     public function userExists(string $email, string $document): bool
     {
-        $user = User::where('email', '=', $email)
-                        ->orWhere('document', '=', $document)->first();
+        $user = $this->userRepository->getByEmailOrDocument($email, $document)->first();
 
         return !empty($user);
+    }
+
+    public function authenticate(array $data): ?User
+    {
+        $auth = Auth::attempt($data);
+
+        if ($auth) {
+            return $this->userRepository->getByEmail($data['email'])->first();
+        }
     }
 }

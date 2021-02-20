@@ -80,11 +80,9 @@ class UserController extends BaseController
             'password' => $request->password
         ];
 
-        $auth = Auth::attempt($data);
+        $user = $this->userService->authenticate($data);
 
-        if ($auth) {
-            $user = User::where('email', '=', $request->email)->first();
-
+        if ($user) {
             $token = $user->createToken('createToken')->accessToken;
 
             $response = [
@@ -92,12 +90,12 @@ class UserController extends BaseController
             ];
 
             return response()->json($response, Response::HTTP_OK);
-        } else {
-            $response = [
-                'error' => 'Unauthorized'
-            ];
-
-            return response()->json($response, Response::HTTP_UNAUTHORIZED);
         }
+
+        $response = [
+            'error' => 'Unauthorized'
+        ];
+
+        return response()->json($response, Response::HTTP_UNAUTHORIZED);
     }
 }
