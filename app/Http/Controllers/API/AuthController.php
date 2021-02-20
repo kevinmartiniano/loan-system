@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Response;
 
 class AuthController extends BaseController
 {
@@ -16,12 +18,21 @@ class AuthController extends BaseController
      */
     public function register(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|min:4',
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-            'password_confirmation' => 'required|min:8',
-        ]);
+        try {
+            $this->validate($request, [
+                'name' => 'required|min:4',
+                'email' => 'required|email',
+                'document' => 'required|min:11|max:14',
+                'password' => 'required|min:8',
+                'password_confirmation' => 'required|min:8',
+            ]);
+        } catch (ValidationException $e) {
+            $response = [
+                'error' => $e->getMessage()
+            ];
+
+            return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         if($request->password_confirmation != $request->password) {
             $response = [
@@ -31,10 +42,26 @@ class AuthController extends BaseController
             return response()->json($response, Response::HTTP_PRECONDITION_FAILED);
         }
 
+        $userType = (!empty($request->user_type_id) ? $request->user_type_id : UserType::GENERAL);
+
+        $userExists = User::where('email', '=', $request->email)
+                                ->orWhere('document', '=', $request->document)
+                                ->first();
+
+        if($userExists) {
+            $response = [
+                'error' => 'User already exists!'
+            ];
+
+            return response()->json($response, Response::HTTP_CONFLICT);
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password)
+            'document' => $request->document,
+            'password' => bcrypt($request->password),
+            'user_type_id' => $userType
         ]);
 
         $token = $user->createToken('createToken')->accessToken;

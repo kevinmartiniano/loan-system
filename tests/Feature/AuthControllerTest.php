@@ -3,6 +3,7 @@
 use Tests\TestCase;
 use Faker\Factory as Faker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\Response;
 
 class AuthControllerTest extends TestCase
 {
@@ -17,14 +18,27 @@ class AuthControllerTest extends TestCase
         $this->faker = Faker::create('pt_BR');
     }
 
-    public function testRegisterWithIncorrectPasswordPassedInConfirmation(): void
+    private function fakerUser(): array
     {
-        $data = [
+        $passLength = 8;
+        $password = $this->faker->password($passLength);
+
+        return [
             'name' => $this->faker->name,
             'email' => $this->faker->email,
-            'password' => $this->faker->password,
-            'password_confirmation' => $this->faker->password
+            'document' => $this->faker->cpf(false),
+            'password' => $password,
+            'password_confirmation' => $password
         ];
+    }
+
+    public function testRegisterWithIncorrectPasswordPassedInConfirmation(): void
+    {
+        $data = $this->fakerUser();
+
+        $passLength = 8;
+
+        $data["password_confirmation"] = $this->faker->password($passLength);
 
         $response = $this->post('/api/register', $data);
 
@@ -35,18 +49,12 @@ class AuthControllerTest extends TestCase
         ];
 
         $response->assertJson($expected, $strict);
+        $response->assertStatus(Response::HTTP_PRECONDITION_FAILED);
     }
 
     public function testRegisterReceivingSuccessMessage(): void
     {
-        $password = $this->faker->password;
-
-        $data = [
-            'name' => $this->faker->name,
-            'email' => $this->faker->email,
-            'password' => $password,
-            'password_confirmation' => $password
-        ];
+        $data = $this->fakerUser();
 
         $response = $this->post('/api/register', $data);
 
@@ -54,6 +62,38 @@ class AuthControllerTest extends TestCase
             'token'
         ];
 
-        $response->assertJsonStructure($expected);
+        $response->assertJsonStructure($expected, $response->getContent());
+    }
+
+    public function testRegisterWithDontSendRequiredFieldUnprocessableEntity(): void
+    {
+        $data = $this->fakerUser();
+
+        $data["document"] = "";
+
+        $response = $this->post('/api/register', $data);
+
+        $expected = [
+            'error' => 'The given data was invalid.'
+        ];
+
+        $response->assertJson($expected);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function testRegisterWithDuplicateDocumentOrEmailIsSendedExpectingConflict(): void
+    {
+        $data = $this->fakerUser();
+
+        $this->post('/api/register', $data);
+
+        $response = $this->post('/api/register', $data);
+
+        $expected = [
+            'error' => 'User already exists!'
+        ];
+
+        $response->assertJson($expected);
+        $response->assertStatus(Response::HTTP_CONFLICT);
     }
 }

@@ -10,6 +10,9 @@ class UserType extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const LOGIST = 1;
+    const GENERAL = 2;
+
     /**
      * The table associated with the model.
      *
