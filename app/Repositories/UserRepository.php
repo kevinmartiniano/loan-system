@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\Eloquent\BaseRepository;
 use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository implements UserRepositoryInterface
@@ -13,7 +14,7 @@ class UserRepository implements UserRepositoryInterface
         return User::where('email', '=', $email)
                         ->orWhere('document', '=', $document)->get();
     }
-    
+
     public function getByEmail(string $email): ?User
     {
         return User::where('email', '=', $email)->get();

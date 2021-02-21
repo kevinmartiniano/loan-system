@@ -9,6 +9,8 @@ class Wallet extends Model
 {
     use HasFactory;
 
+    const EMPTY_WALLET_VALUE = 0;
+
     /**
      * The table associated with the model.
      *
@@ -25,4 +27,9 @@ class Wallet extends Model
         'value',
         'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

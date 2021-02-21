@@ -56,7 +56,9 @@ class AuthControllerTest extends TestCase
     {
         $data = $this->fakerUser();
 
-        $response = $this->post('/api/register', $data);
+        $response = $this->post('/api/register', $data, [
+            'Accept' => 'application/json'
+        ]);
 
         $expected = [
             'token'
@@ -87,7 +89,9 @@ class AuthControllerTest extends TestCase
 
         $this->post('/api/register', $data);
 
-        $response = $this->post('/api/register', $data);
+        $response = $this->post('/api/register', $data, [
+            'Accept' => 'application/json'
+        ]);
 
         $expected = [
             'error' => 'User already exists!'

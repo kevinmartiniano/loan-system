@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Deal extends Model
+class Transaction extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class Deal extends Model
      *
      * @var string
      */
-    protected $table = 'deals';
+    protected $table = 'transactions';
 
     /**
      * The model's default values for attributes.

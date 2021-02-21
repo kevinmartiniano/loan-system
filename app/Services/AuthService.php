@@ -31,7 +31,7 @@ class AuthService {
             throw new JsonException($response, Response::HTTP_CONFLICT);
         }
 
-        $user['user_type_id'] = (!empty($user['user_type_id']) ? $user['user_type_id'] : UserType::GENERAL);
+        $user['user_type_id'] = (!empty($user['user_type_id']) ? $user['user_type_id'] : UserType::DEFAULT);
 
         return $this->userRepository->create($user);
     }

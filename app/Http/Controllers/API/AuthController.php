@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Models\User;
 use App\Models\UserType;
+use App\Models\Wallet;
 use App\Services\AuthService;
+use App\Services\WalletService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +19,15 @@ class AuthController extends BaseController
 {
     private AuthService $authService;
 
-    public function __construct(AuthService $authService)
+    private WalletService $walletService;
+
+    public function __construct(
+        AuthService $authService,
+        WalletService $walletService
+    )
     {
         $this->authService = $authService;
+        $this->walletService = $walletService;
     }
     /**
      * Registration
@@ -35,8 +43,15 @@ class AuthController extends BaseController
                 'password' => 'required|min:8',
                 'password_confirmation' => 'required|min:8',
             ]);
-
             $user = $this->authService->createUser($request->all());
+
+            $data = [
+                'value' => Wallet::EMPTY_WALLET_VALUE,
+                'user_id' => $user->id
+            ];
+
+
+            $this->walletService->create($data);
 
         } catch (ValidationException $e) {
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\ {
     AuthController,
+    TransactionController,
     UserTypeController
 };
 
@@ -28,5 +29,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::resource('user-types', UserTypeController::class);
+
+Route::post('transaction', [TransactionController::class, 'store']);
 
 Route::get('/healthcheck', [IndexController::class, 'index']);

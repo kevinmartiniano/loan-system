@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateDealsTable extends Migration
+class UpdateTransactionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class UpdateDealsTable extends Migration
      */
     public function up()
     {
-        Schema::table('deals', function (Blueprint $table) {
+        Schema::table('transactions', function (Blueprint $table) {
             $table->integer('from_wallet_id');
             $table->integer('to_wallet_id');
 
