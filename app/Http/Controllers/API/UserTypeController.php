@@ -5,10 +5,17 @@ namespace App\Http\Controllers\API;
 use App\Models\UserType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\UserTypeRepositoryInterface;
 use Illuminate\Http\Response;
 
 class UserTypeController extends Controller
 {
+    private UserTypeRepositoryInterface $userTypeRepository;
+
+    public function __construct(UserTypeRepositoryInterface $userTypeRepository)
+    {
+        $this->userTypeRepository = $userTypeRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +23,7 @@ class UserTypeController extends Controller
      */
     public function index()
     {
-        return UserType::all();
+        return $this->userTypeRepository->all();
     }
 
     /**
@@ -27,7 +34,10 @@ class UserTypeController extends Controller
      */
     public function store(Request $request)
     {
-        return response()->json(UserType::create($request->all()), Response::HTTP_CREATED);
+        return response()->json(
+            $this->userTypeRepository->create($request->all()),
+            Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -38,7 +48,7 @@ class UserTypeController extends Controller
      */
     public function show($id)
     {
-        return UserType::find($id);
+        return $this->userTypeRepository->find($id);
     }
 
     /**
@@ -50,10 +60,7 @@ class UserTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $userType = UserType::find($id);
-        $userType->update($request->all());
-
-        return $userType;
+        return $this->userTypeRepository->update($request->all(), $id);
     }
 
     /**
@@ -64,7 +71,7 @@ class UserTypeController extends Controller
      */
     public function destroy($id): void
     {
-        (UserType::find($id))->delete();
+        $this->userTypeRepository->delete($id);
 
         return;
     }

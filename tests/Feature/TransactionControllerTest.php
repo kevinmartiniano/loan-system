@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use App\Models\UserType;
 use App\Models\Wallet;
 use App\Repositories\UserRepository;
@@ -56,7 +57,7 @@ class TransactionControllerTest extends TestCase
 
         $userDefaultFaker = $this->fakerUser();
 
-        $authService = new AuthService(new UserRepository());
+        $authService = new AuthService(new UserRepository(new User()));
 
         $userLojist = $authService->createUser($userLojistFaker);
 
@@ -114,7 +115,7 @@ class TransactionControllerTest extends TestCase
 
         $userDefaultFaker = $this->fakerUser();
 
-        $authService = new AuthService(new UserRepository());
+        $authService = new AuthService(new UserRepository(new User()));
 
         $userLojist = $authService->createUser($userLojistFaker);
 
@@ -184,7 +185,7 @@ class TransactionControllerTest extends TestCase
 
         $userDefaultFaker = $this->fakerUser();
 
-        $authService = new AuthService(new UserRepository());
+        $authService = new AuthService(new UserRepository(new User()));
 
         $userLojist = $authService->createUser($userLojistFaker);
 

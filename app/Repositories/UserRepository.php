@@ -4,25 +4,34 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use App\Repositories\Eloquent\BaseRepository;
 use Illuminate\Database\Eloquent\Collection;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
+    /**
+    * UserRepository constructor.
+    *
+    * @param User $model
+    */
+   public function __construct(User $model)
+   {
+       parent::__construct($model);
+   }
+
     public function getByEmailOrDocument(string $email, string $document): ?Collection
     {
-        return User::where('email', '=', $email)
+        return $this->model->where('email', '=', $email)
                         ->orWhere('document', '=', $document)->get();
     }
 
     public function getByEmail(string $email): ?User
     {
-        return User::where('email', '=', $email)->get();
+        return $this->model->where('email', '=', $email)->get();
     }
 
     public function create(array $user): User
     {
-        return User::create([
+        return $this->model->create([
             'name' => $user['name'],
             'email' => $user['email'],
             'document' => $user['document'],
