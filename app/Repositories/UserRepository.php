@@ -24,7 +24,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                         ->orWhere('document', '=', $document)->get();
     }
 
-    public function getByEmail(string $email): ?User
+    public function getByEmail(string $email): ?Collection
     {
         return $this->model->where('email', '=', $email)->get();
     }

@@ -87,7 +87,22 @@ class TransactionControllerTest extends TestCase
             'payee' => $userDefault->id
         ];
 
-        $response = $this->post('/api/transaction/', $dataTransaction);
+        $data = [
+            'email' => $userLojistFaker['email'],
+            'password' => $userLojistFaker['password']
+        ];
+
+        $response = $this->post('/api/login', $data, [
+            'Accept' => 'application/json'
+        ]);
+
+        $json = json_decode($response->getContent());
+
+        $header = [
+            'Authorization' => 'Bearer ' . $json->token
+        ];
+
+        $response = $this->post('/api/transaction/', $dataTransaction, $header);
 
         $expected = [
             'error' => 'You are not allowed to perform this action'
@@ -147,9 +162,23 @@ class TransactionControllerTest extends TestCase
             'payee' => $userLojist->id
         ];
 
-        $response = $this->post('/api/transaction/', $dataTransaction, [
+        $data = [
+            'email' => $userLojistFaker['email'],
+            'password' => $userLojistFaker['password']
+        ];
+
+
+        $response = $this->post('/api/login', $data, [
             'Accept' => 'application/json'
         ]);
+
+        $json = json_decode($response->getContent());
+
+        $header = [
+            'Authorization' => 'Bearer ' . $json->token
+        ];
+
+        $response = $this->post('/api/transaction/', $dataTransaction, $header);
 
         $expected = [
             'value',
@@ -219,9 +248,22 @@ class TransactionControllerTest extends TestCase
             'payee' => $userLojist->id
         ];
 
-        $response = $this->post('/api/transaction/', $dataTransaction, [
+        $data = [
+            'email' => $userDefaultFaker['email'],
+            'password' => $userDefaultFaker['password']
+        ];
+
+        $response = $this->post('/api/login', $data, [
             'Accept' => 'application/json'
         ]);
+
+        $json = json_decode($response->getContent());
+
+        $header = [
+            'Authorization' => 'Bearer ' . $json->token
+        ];
+
+        $response = $this->post('/api/transaction/', $dataTransaction, $header);
 
         $expected = [
             'error' => 'Limit value exceeded'

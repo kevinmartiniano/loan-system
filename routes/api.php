@@ -30,6 +30,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::resource('/user-types', UserTypeController::class);
 
-Route::post('/transaction', [TransactionController::class, 'store']);
+Route::post('/transaction', [TransactionController::class, 'store'])->middleware('auth:api');
 
 Route::get('/healthcheck', [IndexController::class, 'index']);

@@ -9,7 +9,7 @@ interface UserRepositoryInterface
 {
     public function getByEmailOrDocument(string $email, string $document): ?Collection;
 
-    public function getByEmail(string $email): ?User;
+    public function getByEmail(string $email): ?Collection;
 
     public function create(array $user): User;
 }

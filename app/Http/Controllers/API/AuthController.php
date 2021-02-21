@@ -95,7 +95,7 @@ class AuthController extends BaseController
             'password' => $request->password
         ];
 
-        $user = $this->authService->authenticate($data);
+        $user = $this->authService->authenticate($data)->first();
 
         if ($user) {
             $token = $user->createToken('createToken')->accessToken;
