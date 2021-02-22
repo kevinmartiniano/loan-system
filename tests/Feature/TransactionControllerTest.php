@@ -24,6 +24,8 @@ class TransactionControllerTest extends TestCase
         parent::setUp();
 
         $this->faker = Faker::create('pt_BR');
+        $this->artisan('db:seed');
+        $this->artisan('passport:install');
     }
 
     private function fakerUser(): array
@@ -42,44 +44,14 @@ class TransactionControllerTest extends TestCase
 
     public function testCreateTransferWithUserFromIsTypeLojistExpectingNotAllowed(): void
     {
-        UserType::create([
-            'name' => 'lojist',
-            'description' => ''
-        ]);
+        $walletLojist = Wallet::factory(1)->create();
 
-        UserType::create([
-            'name' => 'default',
-            'description' => ''
-        ]);
+        $userLojist = $walletLojist->user;
+        $userLojist->user_type_id = UserType::LOJIST;
+        $userLojist->save();
 
-        $userLojistFaker = $this->fakerUser();
-        $userLojistFaker['user_type_id'] = UserType::LOJIST;
-
-        $userDefaultFaker = $this->fakerUser();
-
-        $authService = new AuthService(new UserRepository(new User()));
-
-        $userLojist = $authService->createUser($userLojistFaker);
-
-        $data = [
-            'value' => Wallet::EMPTY_WALLET_VALUE,
-            'user_id' => $userLojist->id
-        ];
-
-        $walletService = new WalletService();
-
-        $walletService->create($data);
-
-        $userDefault = $authService->createUser($userDefaultFaker);
-
-        $data = [
-            'value' => Wallet::EMPTY_WALLET_VALUE,
-            'user_id' => $userDefault->id
-        ];
-
-        $walletService = new WalletService();
-
-        $walletService->create($data);
+        $walletDefault = Wallet::factory(1)->create();
+        $userDefault = $walletDefault->user;
 
         $dataTransaction = [
             'value' => 100.00,
@@ -88,8 +60,8 @@ class TransactionControllerTest extends TestCase
         ];
 
         $data = [
-            'email' => $userLojistFaker['email'],
-            'password' => $userLojistFaker['password']
+            'email' => $userLojist['email'],
+            'password' => 'password'
         ];
 
         $response = $this->post('/api/login', $data, [
@@ -115,46 +87,18 @@ class TransactionControllerTest extends TestCase
 
     public function testCreateTransferWithUserFromIsTypeDefaultExpectingCreated(): void
     {
-        UserType::create([
-            'name' => 'lojist',
-            'description' => ''
-        ]);
-
-        UserType::create([
-            'name' => 'default',
-            'description' => ''
-        ]);
-
-        $userLojistFaker = $this->fakerUser();
-        $userLojistFaker['user_type_id'] = UserType::LOJIST;
-
-        $userDefaultFaker = $this->fakerUser();
-
-        $authService = new AuthService(new UserRepository(new User()));
-
-        $userLojist = $authService->createUser($userLojistFaker);
-
         $walletValue = 5000;
 
-        $data = [
-            'value' => $walletValue,
-            'user_id' => $userLojist->id
-        ];
+        $walletLojist = Wallet::factory(1)->create();
+        $walletLojist->value = $walletValue;
+        $walletLojist->save();
 
-        $walletService = new WalletService();
+        $userLojist = $walletLojist->user;
+        $userLojist->user_type_id = UserType::LOJIST;
+        $userLojist->save();
 
-        $walletLojist = $walletService->create($data);
-
-        $userDefault = $authService->createUser($userDefaultFaker);
-
-        $data = [
-            'value' => $walletValue,
-            'user_id' => $userDefault->id
-        ];
-
-        $walletService = new WalletService();
-
-        $walletDefault = $walletService->create($data);
+        $walletDefault = Wallet::factory(1)->create();
+        $userDefault = $walletDefault->user;
 
         $dataTransaction = [
             'value' => 100.00,
@@ -163,8 +107,8 @@ class TransactionControllerTest extends TestCase
         ];
 
         $data = [
-            'email' => $userLojistFaker['email'],
-            'password' => $userLojistFaker['password']
+            'email' => $userLojist->email,
+            'password' => 'password'
         ];
 
 
@@ -199,58 +143,23 @@ class TransactionControllerTest extends TestCase
 
     public function testCreateTransferWithUserFromIsTypeDefaultAndAHigherValuePassedExpectingNotAllowed(): void
     {
-        UserType::create([
-            'name' => 'lojist',
-            'description' => ''
-        ]);
+        $firstWallet = Wallet::factory(1)->create();
+        $firstUser = $firstWallet->user;
 
-        UserType::create([
-            'name' => 'default',
-            'description' => ''
-        ]);
+        $secondWallet = Wallet::factory(1)->create();
+        $secondUser = $secondWallet->user;
 
-        $userLojistFaker = $this->fakerUser();
-        $userLojistFaker['user_type_id'] = UserType::LOJIST;
-
-        $userDefaultFaker = $this->fakerUser();
-
-        $authService = new AuthService(new UserRepository(new User()));
-
-        $userLojist = $authService->createUser($userLojistFaker);
-
-        $walletValue = 5000;
-
-        $data = [
-            'value' => $walletValue,
-            'user_id' => $userLojist->id
-        ];
-
-        $walletService = new WalletService();
-
-        $walletService->create($data);
-
-        $userDefault = $authService->createUser($userDefaultFaker);
-
-        $data = [
-            'value' => $walletValue,
-            'user_id' => $userDefault->id
-        ];
-
-        $walletService = new WalletService();
-
-        $walletService->create($data);
-
-        $higherValue = 5100.00;
+        $higherValue = 8000000;
 
         $dataTransaction = [
             'value' => $higherValue,
-            'payer' => $userDefault->id,
-            'payee' => $userLojist->id
+            'payer' => $secondUser->id,
+            'payee' => $firstUser->id
         ];
 
         $data = [
-            'email' => $userDefaultFaker['email'],
-            'password' => $userDefaultFaker['password']
+            'email' => $secondUser->email,
+            'password' => 'password'
         ];
 
         $response = $this->post('/api/login', $data, [

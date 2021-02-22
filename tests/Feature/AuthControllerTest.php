@@ -16,6 +16,8 @@ class AuthControllerTest extends TestCase
         parent::setUp();
 
         $this->faker = Faker::create('pt_BR');
+        $this->artisan('db:seed');
+        $this->artisan('passport:install');
     }
 
     private function fakerUser(): array
