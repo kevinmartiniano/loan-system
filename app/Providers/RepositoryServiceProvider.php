@@ -6,8 +6,10 @@ use App\Repositories\BaseRepository;
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\UserTypeRepositoryInterface;
+use App\Repositories\Interfaces\WalletRepositoryInterface;
 use App\Repositories\UserRepository;
 use App\Repositories\UserTypeRepository;
+use App\Repositories\WalletRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -32,6 +34,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             UserTypeRepositoryInterface::class,
             UserTypeRepository::class
+        );
+
+        $this->app->bind(
+            WalletRepositoryInterface::class,
+            WalletRepository::class
         );
     }
 }
