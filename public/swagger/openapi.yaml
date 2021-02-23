@@ -1,0 +1,168 @@
+openapi: 3.0.0
+info:
+  title: 'My First API'
+  version: '0.1'
+paths:
+  /api/register/:
+    post:
+      tags:
+        - Auth
+      description: 'Route to register a user.'
+      operationId: 'App\Http\Controllers\API\AuthController::register'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - email
+                - document
+                - password
+                - password_confirmation
+                - user_type_id
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                document:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+                user_type_id:
+                  type: integer
+              type: object
+      responses:
+        '200':
+          description: 'A user is logged and a token response is received'
+  /api/login/:
+    post:
+      tags:
+        - Auth
+      description: 'Route to login a user existing in database.'
+      operationId: 'App\Http\Controllers\API\AuthController::login'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: 'A user is logged and a token response is received'
+  /api/transaction/:
+    post:
+      tags:
+        - Transactions
+      description: 'Create a UserTypes'
+      operationId: 'App\Http\Controllers\API\TransactionController::store'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - value
+                - payer
+                - payee
+              properties:
+                value:
+                  type: number
+                  format: float
+                payer:
+                  type: integer
+                payee:
+                  type: integer
+              type: object
+      responses:
+        '201':
+          description: 'transaction created'
+  /api/user-types/:
+    get:
+      tags:
+        - UserTypes
+      operationId: 'App\Http\Controllers\API\UserTypeController::index'
+      responses:
+        '200':
+          description: 'A user-type list.'
+    put:
+      tags:
+        - UserTypes
+      description: 'Update a UserType'
+      operationId: 'App\Http\Controllers\API\UserTypeController::update'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: 'user updated'
+    post:
+      tags:
+        - UserTypes
+      description: 'Create a UserTypes'
+      operationId: 'App\Http\Controllers\API\UserTypeController::store'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+              type: object
+      responses:
+        '201':
+          description: 'user-type created'
+  '/api/user-types/{id}':
+    get:
+      tags:
+        - UserTypes
+      operationId: 'App\Http\Controllers\API\UserTypeController::show'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'A user-type specified is returned.'
+    delete:
+      tags:
+        - UserTypes
+      description: 'Delete a UserType specified'
+      operationId: 'App\Http\Controllers\API\UserTypeController::destroy'
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'user-type deleted'
+  /api/healthcheck:
+    get:
+      tags:
+        - HealthCheck
+      responses:
+        '200':
+          description: 'A route to healthcheck'
