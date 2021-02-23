@@ -13,10 +13,10 @@ class TransactionRepository extends BaseRepository implements TransactionReposit
     *
     * @param Wallet $model
     */
-   public function __construct(Transaction $model)
-   {
-       parent::__construct($model);
-   }
+    public function __construct(Transaction $model)
+    {
+        parent::__construct($model);
+    }
 
     public function update(array $data, $id): Transaction
     {

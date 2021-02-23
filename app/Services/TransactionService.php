@@ -27,8 +27,7 @@ class TransactionService
         UserRepositoryInterface $userRepository,
         WalletRepositoryInterface $walletRepository,
         TransactionRepositoryInterface $transactionRepository
-    )
-    {
+    ) {
         $this->userRepository = $userRepository;
         $this->walletRepository = $walletRepository;
         $this->transactionRepository = $transactionRepository;
@@ -49,7 +48,7 @@ class TransactionService
 
         $validate = $this->validate($transaction, $payer->wallet, $payee->wallet);
 
-        if($validate) {
+        if ($validate) {
             $transaction = $this->transactionRepository->update([
                 'is_valid' => true
             ], $transaction->id);
@@ -67,8 +66,7 @@ class TransactionService
         Transaction $transaction,
         Wallet $payerWallet,
         Wallet $payeeWallet
-    ): bool
-    {
+    ): bool {
         return DB::transaction(function () use (
             $payerWallet,
             $payeeWallet,

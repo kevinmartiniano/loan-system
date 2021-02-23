@@ -10,8 +10,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use JsonException;
 
-class AuthService {
-
+class AuthService
+{
     private UserRepositoryInterface $userRepository;
 
     public function __construct(UserRepositoryInterface $userRepository)
@@ -21,13 +21,13 @@ class AuthService {
 
     public function createUser(array $user): User
     {
-        if(!$this->passwordEquals($user['password'], $user['password_confirmation'])) {
+        if (!$this->passwordEquals($user['password'], $user['password_confirmation'])) {
             $response = 'Passwords do not match';
 
             throw new JsonException($response, Response::HTTP_PRECONDITION_FAILED);
         }
 
-        if($this->userExists($user['email'], $user['document'])) {
+        if ($this->userExists($user['email'], $user['document'])) {
             $response = 'User already exists!';
 
             throw new JsonException($response, Response::HTTP_CONFLICT);

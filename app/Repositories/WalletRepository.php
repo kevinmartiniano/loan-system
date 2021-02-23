@@ -13,10 +13,10 @@ class WalletRepository extends BaseRepository implements WalletRepositoryInterfa
     *
     * @param Wallet $model
     */
-   public function __construct(Wallet $model)
-   {
-       parent::__construct($model);
-   }
+    public function __construct(Wallet $model)
+    {
+        parent::__construct($model);
+    }
 
     public function update(array $data, $id): Wallet
     {

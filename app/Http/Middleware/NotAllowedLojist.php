@@ -27,10 +27,10 @@ class NotAllowedLojist
     {
         $payer = $request->input('payer');
 
-        if(isset($payer)) {
+        if (isset($payer)) {
             $user = $this->userRepository->find($payer);
 
-            if($user->user_type->id == UserType::LOJIST) {
+            if ($user->user_type->id == UserType::LOJIST) {
                 return response()->json([
                     'error' => 'You are not allowed to perform this action'
                 ], Response::HTTP_METHOD_NOT_ALLOWED);

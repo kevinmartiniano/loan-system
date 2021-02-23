@@ -23,8 +23,7 @@ class AuthController extends Controller
     public function __construct(
         AuthService $authService,
         WalletService $walletService
-    )
-    {
+    ) {
         $this->authService = $authService;
         $this->walletService = $walletService;
     }
@@ -34,7 +33,6 @@ class AuthController extends Controller
     public function register(RegisterUserRequest $request): JsonResponse
     {
         try {
-
             $user = $this->authService->createUser($request->all());
 
             $data = [
@@ -44,23 +42,18 @@ class AuthController extends Controller
 
 
             $this->walletService->create($data);
-
         } catch (ValidationException $e) {
-
             $response = [
                 'error' => $e->getMessage()
             ];
 
             return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
-
         } catch (Exception $e) {
-
             $response = [
                 'error' => $e->getMessage()
             ];
 
             return response()->json($response, $e->getCode());
-
         }
 
         $token = $user->createToken('createToken')->accessToken;

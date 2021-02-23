@@ -27,10 +27,10 @@ class CheckWalletValue
         $value = $request->input('value');
         $payerId = $request->input('payer');
 
-        if(isset($value) && !empty($payerId)) {
+        if (isset($value) && !empty($payerId)) {
             $user = $this->userRepository->find($request->input('payer'));
 
-            if($user->wallet->value < $value) {
+            if ($user->wallet->value < $value) {
                 return response()->json([
                     'error' => 'Limit value exceeded'
                 ], Response::HTTP_METHOD_NOT_ALLOWED);
