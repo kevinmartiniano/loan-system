@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTransactionRequest;
 use App\Services\TransactionService;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -24,33 +25,10 @@ class TransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreTransactionRequest $request): JsonResponse
     {
-        try {
+        $transaction = $this->transactionService->sendTransaction($request->all());
 
-            $this->validate($request, [
-                'value' => 'required|numeric',
-                'payer' => 'required|integer',
-                'payee' => 'required|integer'
-            ]);
-
-            $transaction = $this->transactionService->sendTransaction($request->all());
-
-            return response()->json($transaction, Response::HTTP_CREATED);
-
-        } catch (ValidationException $e) {
-
-            return response()->json([
-                'error' => $e->getMessage()
-            ], Response::HTTP_METHOD_NOT_ALLOWED);
-
-        } catch (Exception $e) {
-
-            return response()->json([
-                'error' => $e->getMessage()
-            ], $e->getCode());
-
-        }
-
+        return response()->json($transaction, Response::HTTP_CREATED);
     }
 }

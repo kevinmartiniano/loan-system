@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
 use App\Models\Wallet;
 use App\Services\AuthService;
 use App\Services\WalletService;
@@ -29,17 +31,9 @@ class AuthController extends Controller
     /**
      * Registration
      */
-    public function register(Request $request): JsonResponse
+    public function register(RegisterUserRequest $request): JsonResponse
     {
         try {
-
-            $this->validate($request, [
-                'name' => 'required|min:4',
-                'email' => 'required|email',
-                'document' => 'required|min:11|max:14',
-                'password' => 'required|min:8',
-                'password_confirmation' => 'required|min:8',
-            ]);
 
             $user = $this->authService->createUser($request->all());
 
@@ -81,13 +75,8 @@ class AuthController extends Controller
     /**
      * Login
      */
-    public function login(Request $request): JsonResponse
+    public function login(LoginUserRequest $request): JsonResponse
     {
-        $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-        ]);
-
         $data = [
             'email' => $request->email,
             'password' => $request->password

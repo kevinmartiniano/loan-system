@@ -25,8 +25,9 @@ class CheckWalletValue
     public function handle(Request $request, Closure $next)
     {
         $value = $request->input('value');
+        $payerId = $request->input('payer');
 
-        if(isset($value)) {
+        if(isset($value) && !empty($payerId)) {
             $user = $this->userRepository->find($request->input('payer'));
 
             if($user->wallet->value < $value) {

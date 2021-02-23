@@ -183,4 +183,56 @@ class TransactionControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED);
     }
+
+    public function testTransferDontSendingRequiredFieldExpectingUnprocessableEntity(): void
+    {
+        $walletValue = 5000;
+
+        $walletLojist = Wallet::factory(1)->create();
+        $walletLojist->value = $walletValue;
+        $walletLojist->save();
+
+        $userLojist = $walletLojist->user;
+        $userLojist->user_type_id = UserType::LOJIST;
+        $userLojist->save();
+
+        $walletDefault = Wallet::factory(1)->create();
+        $userDefault = $walletDefault->user;
+
+        $data = [
+            'email' => $userLojist->email,
+            'password' => 'password'
+        ];
+
+
+        $response = $this->post('/api/login', $data, [
+            'Accept' => 'application/json'
+        ]);
+
+        $json = json_decode($response->getContent());
+
+        $dataTransaction = [
+            'value' => 100.00,
+            'payer' => '',
+            'payee' => $userLojist->id
+        ];
+
+        $header = [
+            'Authorization' => 'Bearer ' . $json->token,
+            'Accept' => 'application/json'
+        ];
+
+        $response = $this->post('/api/transaction/', $dataTransaction, $header);
+
+        $expected = [
+            "error" => [
+                "payer" => [
+                    "The payer field is required."
+                ]
+            ]
+        ];
+
+        $response->assertJson($expected);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 }

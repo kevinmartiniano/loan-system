@@ -70,7 +70,7 @@ class AuthControllerTest extends TestCase
         $response->assertJsonStructure($expected, $response->getContent());
     }
 
-    public function testRegisterWithDontSendRequiredFieldUnprocessableEntity(): void
+    public function testRegisterWithDontSendRequiredFieldDocumentUnprocessableEntity(): void
     {
         $data = $this->fakerUser();
 
@@ -79,7 +79,11 @@ class AuthControllerTest extends TestCase
         $response = $this->post('/api/register', $data);
 
         $expected = [
-            'error' => 'The given data was invalid.'
+            "error" => [
+                "document" => [
+                    "The document field is required."
+                ]
+            ]
         ];
 
         $response->assertJson($expected);
@@ -102,5 +106,33 @@ class AuthControllerTest extends TestCase
 
         $response->assertJson($expected);
         $response->assertStatus(Response::HTTP_CONFLICT);
+    }
+
+    public function testLoginWithoutSendEmailFieldExpectionUnprocessableEntity(): void
+    {
+        $data = $this->fakerUser();
+
+        $response = $this->post('/api/register', $data, [
+            'Accept' => 'application/json'
+        ]);
+
+        $dataLogin = [
+            'email' => '',
+            'password' => $data['password']
+        ];
+
+        $response = $this->post('/api/login', $dataLogin, [
+            'Accept' => 'application/json'
+        ]);
+
+        $expected = [
+            "error" => [
+                "email" => [
+                    'The email field is required.'
+                ]
+            ]
+        ];
+
+        $response->assertJson($expected, $response->getContent());
     }
 }
