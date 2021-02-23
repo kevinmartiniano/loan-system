@@ -28,6 +28,36 @@ class AuthController extends Controller
         $this->walletService = $walletService;
     }
     /**
+     * @OA\Post(
+     *   tags={"Auth"},
+     *   path="/api/register/",
+     *   description="Route to register a user.",
+     *   @OA\RequestBody(
+     *     @OA\MediaType(mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(property="name", type="string"),
+     *         @OA\Property(property="email", type="string"),
+     *         @OA\Property(property="document", type="string"),
+     *         @OA\Property(property="password", type="string"),
+     *         @OA\Property(property="password_confirmation", type="string"),
+     *         @OA\Property(property="user_type_id", type="integer"),
+     *         required={
+     *           "name",
+     *           "email",
+     *           "document",
+     *           "password",
+     *           "password_confirmation",
+     *           "user_type_id"
+     *         }
+     *       )
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response="200",
+     *     description="A user is logged and a token response is received"
+     *   )
+     * )
+     *
      * Registration
      */
     public function register(RegisterUserRequest $request): JsonResponse
@@ -66,6 +96,25 @@ class AuthController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *   tags={"Auth"},
+     *   path="/api/login/",
+     *   description="Route to login a user existing in database.",
+     *   @OA\RequestBody(
+     *     @OA\MediaType(mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(property="email", type="string"),
+     *         @OA\Property(property="password", type="string"),
+     *         required={"name", "password"}
+     *       )
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response="200",
+     *     description="A user is logged and a token response is received"
+     *   )
+     * )
+     *
      * Login
      */
     public function login(LoginUserRequest $request): JsonResponse

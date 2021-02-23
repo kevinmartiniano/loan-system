@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Services\TransactionService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
@@ -19,7 +16,28 @@ class TransactionController extends Controller
     {
         $this->transactionService = $transactionService;
     }
+
     /**
+     * @OA\Post(
+     *   tags={"Transactions"},
+     *   path="/api/transaction/",
+     *   description="Create a UserTypes",
+     *   @OA\RequestBody(
+     *     @OA\MediaType(mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(property="value", type="number", format="float"),
+     *         @OA\Property(property="payer", type="integer"),
+     *         @OA\Property(property="payee", type="integer"),
+     *         required={"value", "payer", "payee"}
+     *       )
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response="201",
+     *     description="transaction created"
+     *   )
+     * )
+     *
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

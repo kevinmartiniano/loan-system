@@ -17,8 +17,13 @@ class UserTypeController extends Controller
     {
         $this->userTypeRepository = $userTypeRepository;
     }
+
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *   tags={"UserTypes"},
+     *   path="/api/user-types/",
+     *   @OA\Response(response="200", description="A user-type list.")
+     * )
      *
      * @return \Illuminate\Http\Response
      */
@@ -28,6 +33,24 @@ class UserTypeController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *   tags={"UserTypes"},
+     *   path="/api/user-types/",
+     *   description="Create a UserTypes",
+     *   @OA\RequestBody(
+     *     @OA\MediaType(mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(property="name", type="string"),
+     *         @OA\Property(property="description", type="string"),
+     *       )
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response="201",
+     *     description="user-type created"
+     *   )
+     * )
+     *
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -42,6 +65,20 @@ class UserTypeController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *   tags={"UserTypes"},
+     *   @OA\Parameter(
+     *     name="id",
+     *     required=true,
+     *     in="path",
+     *     @OA\Schema(type="integer")
+     *   ),
+     *   path="/api/user-types/{id}",
+     *   @OA\Response(
+     *     response="200",
+     *     description="A user-type specified is returned."
+     *   )
+     * )
      * Display the specified resource.
      *
      * @param  int  $id
@@ -53,6 +90,21 @@ class UserTypeController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *   tags={"UserTypes"},
+     *   path="/api/user-types/",
+     *   description="Update a UserType",
+     *   @OA\RequestBody(
+     *     @OA\MediaType(mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(property="name", type="string"),
+     *         @OA\Property(property="description", type="string"),
+     *       )
+     *     )
+     *   ),
+     *   @OA\Response(response="200", description="user updated")
+     * )
+     *
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -65,6 +117,22 @@ class UserTypeController extends Controller
     }
 
     /**
+     * @OA\Delete(
+     *   tags={"UserTypes"},
+     *   @OA\Parameter(
+     *     name="id",
+     *     required=true,
+     *     in="path",
+     *     @OA\Schema(type="integer")
+     *   ),
+     *   path="/api/user-types/{id}",
+     *   description="Delete a UserType specified",
+     *   @OA\Response(
+     *     response="200",
+     *     description="user-type deleted"
+     *   )
+     * )
+     *
      * Remove the specified resource from storage.
      *
      * @param  int  $id
