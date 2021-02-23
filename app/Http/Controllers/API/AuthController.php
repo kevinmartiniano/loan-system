@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\User;
-use App\Models\UserType;
+use App\Http\Controllers\Controller;
 use App\Models\Wallet;
 use App\Services\AuthService;
 use App\Services\WalletService;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Response;
 
-class AuthController extends BaseController
+class AuthController extends Controller
 {
     private AuthService $authService;
 
@@ -32,7 +29,7 @@ class AuthController extends BaseController
     /**
      * Registration
      */
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
         try {
 
@@ -43,6 +40,7 @@ class AuthController extends BaseController
                 'password' => 'required|min:8',
                 'password_confirmation' => 'required|min:8',
             ]);
+
             $user = $this->authService->createUser($request->all());
 
             $data = [
@@ -77,13 +75,13 @@ class AuthController extends BaseController
             'token' => $token
         ];
 
-        return response()->json($response, Response::HTTP_OK);
+        return response()->json($response, Response::HTTP_CREATED);
     }
 
     /**
      * Login
      */
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $this->validate($request, [
             'email' => 'required|email',

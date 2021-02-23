@@ -73,30 +73,4 @@ class TransactionServiceTest extends TestCase
             'value' => $payeeValueBeforeTransaction + 1000
         ]);
     }
-
-    public function testSendTransactionExpectingNotAllowedException(): void
-    {
-        $payerWallet = Wallet::factory(1)->create();
-        $payerUser = $payerWallet->user;
-        $payerUser->user_type_id = UserType::LOJIST;
-        $payerUser->save();
-
-        $payeeWallet = Wallet::factory(1)->create();
-
-        $transactionService = new TransactionService(
-            new UserRepository(new User()),
-            new WalletRepository(new Wallet()),
-            new TransactionRepository(new Transaction())
-        );
-
-        $data = [
-            'value' => 1000,
-            'payer' => $payerWallet->user_id,
-            'payee' => $payeeWallet->user_id
-        ];
-
-        $this->expectException(Exception::class);
-
-        $transactionService->sendTransaction($data);
-    }
 }

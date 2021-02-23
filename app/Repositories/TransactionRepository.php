@@ -25,4 +25,9 @@ class TransactionRepository extends BaseRepository implements TransactionReposit
 
         return $transaction;
     }
+
+    public function create(array $data): Transaction
+    {
+        return Transaction::create($data);
+    }
 }

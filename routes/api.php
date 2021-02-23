@@ -30,6 +30,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::resource('/user-types', UserTypeController::class);
 
-Route::post('/transaction', [TransactionController::class, 'store'])->middleware('auth:api');
+Route::post('/transaction', [TransactionController::class, 'store'])->middleware([
+    'auth:api',
+    'not.allowed.lojist',
+    'check.wallet.value'
+]);
 
 Route::get('/healthcheck', [IndexController::class, 'index']);

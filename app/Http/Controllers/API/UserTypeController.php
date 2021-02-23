@@ -6,6 +6,7 @@ use App\Models\UserType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\UserTypeRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class UserTypeController extends Controller
@@ -21,9 +22,9 @@ class UserTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        return $this->userTypeRepository->all();
+        return response()->json($this->userTypeRepository->all(), Response::HTTP_OK);
     }
 
     /**
@@ -46,9 +47,9 @@ class UserTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
-        return $this->userTypeRepository->find($id);
+        return response()->json($this->userTypeRepository->find($id), Response::HTTP_OK);
     }
 
     /**
@@ -60,7 +61,7 @@ class UserTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->userTypeRepository->update($request->all(), $id);
+        return response()->json($this->userTypeRepository->update($request->all(), $id), Response::HTTP_OK);
     }
 
     /**
@@ -69,10 +70,10 @@ class UserTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id): void
+    public function destroy($id): JsonResponse
     {
         $this->userTypeRepository->delete($id);
 
-        return;
+        return response()->json([], Response::HTTP_OK);
     }
 }

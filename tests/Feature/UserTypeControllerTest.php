@@ -6,11 +6,12 @@ use App\Models\UserType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Faker\Factory as Faker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 
 class UserTypeControllerTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $faker;
 
@@ -19,6 +20,8 @@ class UserTypeControllerTest extends TestCase
         parent::setUp();
 
         $this->faker = Faker::create('pt_BR');
+
+        $this->artisan('passport:install');
     }
 
     private function fakerUserType(): array
@@ -78,7 +81,6 @@ class UserTypeControllerTest extends TestCase
 
         $response = $this->delete('/api/user-types/' . $userType->id);
 
-        $this->assertEmpty($response->getContent());
         $response->assertStatus(Response::HTTP_OK);
     }
 
