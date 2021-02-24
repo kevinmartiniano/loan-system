@@ -27,6 +27,7 @@ Install all the dependencies using composer
 Copy the example env file and make the required configuration changes in the .env file
 
     cp .env.example .env
+    ## The database credentials written in .env will be defined at the time of the build.
 
 Run docker create network command
 
