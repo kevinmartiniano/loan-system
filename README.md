@@ -27,6 +27,10 @@ Install all the dependencies using composer
 Copy the example env file and make the required configuration changes in the .env file
 
     cp .env.example .env
+
+Run docker create network command
+
+    docker network create loan-network
     
 Run docker compose command to build application
 
