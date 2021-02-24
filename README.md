@@ -103,6 +103,7 @@ Run the database seeder and you're done
 ```
 
 The api can be accessed at [http://localhost:8000/api]
+The access to openapi documentation [http://localhost:8000/swagger/index.html]
 
 # Code overview
 
