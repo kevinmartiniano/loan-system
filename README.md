@@ -61,6 +61,14 @@ Run the database migrations (**Set the database connection in .env before migrat
 
     php artisan migrate
 
+if you want to run the tests for the first time, run the command
+
+    php artisan config:cache
+
+To run tests
+
+    vendor/bin/phpunit
+
 You can now access the server at http://localhost:8000
 
 **TL;DR command list**
@@ -78,7 +86,7 @@ You can now access the server at http://localhost:8000
     
 ## Database seeding
 
-**Populate the database with seed data with relationships which includes users, articles, comments, tags, favorites and follows. This can help you to quickly start testing the api or couple a frontend and start using it with ready content.**
+**Populate the database with seed creating the user types lojist and default.**
 
 Open the DummyDataSeeder and set the property values as per your requirement
 
